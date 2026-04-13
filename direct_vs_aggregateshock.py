@@ -36,7 +36,7 @@ H   = 20           # max horizon
 p   = 4            # lag order for LP controls
 rho = 0.70         # AR(1) persistence for true IRF decay
 shock_names   = ['FP', 'MP', 'TFP', 'Oil', 'Crisis']
-outcome_names = ['log IP', 'Unemployment']
+outcome_names = ['Unemployment', 'Inflation']
 
 # ── True parameters ───────────────────────────────────────────────────────────
 Omega_true = np.array([
@@ -48,8 +48,8 @@ Omega_true = np.array([
 ])  # 5×5
 
 A0_true = np.array([
-    [ 0.50, -0.30,  0.40, -0.20, -0.50],   # log IP responses (1×5)
-    [-0.30,  0.20, -0.20,  0.30,  0.40],   # unemployment     (1×5)
+    [ 0.50, -0.30,  0.40, -0.20, -0.50],   # unemployment responses (1×5)
+    [-0.30,  0.20, -0.20,  0.30,  0.40],   # inflation responses    (1×5)
 ])  # 2×5
 
 # True IRF(h) = rho^h * A0_true @ Omega_true  →  2×5 at each h
@@ -69,20 +69,20 @@ aggr     = eps @ Omega_true.T                          # T×5
 rng2 = np.random.default_rng(42)
 
 # Bug 9 fix: Y simulation now incorporates aggregate shocks
-u       = np.zeros(T)
-pi_rate = np.zeros(T)           # renamed from `i` to avoid loop-variable conflict
-u[0]       = 6.0
-pi_rate[0] = 2.0
+unemp = np.zeros(T)   # unemployment rate
+infl  = np.zeros(T)   # inflation rate
+unemp[0] = 6.0
+infl[0]  = 2.0
 
 for t in range(1, T):
-    u[t]       = (0.5 + 0.9 * u[t - 1]
-                  + A0_true[0] @ aggr[t]        # Bug 9: add shock effect
-                  + 0.5 * rng2.standard_normal())
-    pi_rate[t] = (0.5 + 0.8 * pi_rate[t - 1]
-                  + A0_true[1] @ aggr[t]        # Bug 9: add shock effect
-                  + 0.4 * rng2.standard_normal())
+    unemp[t] = (0.5 + 0.9 * unemp[t - 1]
+                + A0_true[0, :] @ aggr[t]     # Bug 9: add shock effect
+                + 0.5 * rng2.standard_normal())
+    infl[t]  = (0.5 + 0.8 * infl[t - 1]
+                + A0_true[1, :] @ aggr[t]     # Bug 9: add shock effect
+                + 0.4 * rng2.standard_normal())
 
-Y = np.column_stack([u, pi_rate])   # T×2
+Y = np.column_stack([unemp, infl])   # T×2
 
 # Omega_direct: diagonal matrix using diagonal of Omega_true
 Omega_direct = np.diag(np.diag(Omega_true))   # 5×5 diagonal
