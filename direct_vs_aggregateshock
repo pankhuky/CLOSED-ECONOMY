@@ -1,0 +1,123 @@
+
+%%  -------------------------------------------------------------------
+clear; clc; rng(42);
+
+%% ── Parameters ──────────────────────────────────────────────────────
+T   = 600;          % sample size
+K   = 4;            % number of structural shocks
+crises_shock = zeros(T,1) ; % One time shock
+crises_shock(T,1) = 1;
+N   = 2;            % number of outcomes  (log IP, unemployment)
+H   = 20;           % max horizon
+p   = 4;            % lag order for LP controls
+rho = 0.70;         % AR(1) persistence
+noise_std = 0.25;
+shock_names   = {'FP','MP','TFP','Oil','Crisis'};
+outcome_names = {'log IP','Unemployment'};
+
+%% ── True parameters ─────────────────────────────────────────────────
+Omega_true = [0.80 0.20 0.10 0.30 0.00;
+              0.10 0.90 0.20 0.10 0.30;
+              0.20 0.10 0.70 0.20 0.10;
+              0.30 0.20 0.10 0.80 0.20;
+              0.00 0.10 0.20 0.10 0.90];   % 5×5
+
+A0_true = [ 0.50 -0.30  0.40 -0.20 -0.50;   % log IP responses (1×5)
+           -0.30  0.20 -0.20  0.30  0.40];   % unemployment     (1×5)
+                                              % A0_true is 2×5
+
+% True IRF(h) = rho^h * A0_true * Omega_true  →  2×5 at each h
+true_irf = zeros(N, K+1, H+1);
+for h = 0:H
+    true_irf(:,:,h+1) = (rho^h) * A0_true * Omega_true;
+end
+
+%% ── DGP: simulate shocks and outcomes ───────────────────────────────
+eps = [randn(T, K), crises_shock];       %Tx(K+1)              
+aggr = eps * Omega_true';                       % T×5
+% Set seed for reproducibility
+rng(42);
+
+u = zeros(T,1); % Preallocate
+i = zeros(T,1); % Preallocate
+
+% Parameters
+u(1) = 6; % Starting unemployment rate
+i(1) = 2; % Starting inflation rate
+
+% Simulation loop
+for t = 2:T
+    % Unemployment follows previous value + small noise (mean 5.5, inertia 0.9)
+    u(t) = 0.5 + 0.9*u(t-1) + 0.5*randn();
+    
+    % Inflation follows previous value + small noise (mean 2.5, inertia 0.8)
+    i(t) = 0.5 + 0.8*i(t-1) + 0.4*randn();
+end
+
+Y = [u,i];
+
+%% Generating the Omega_direct 5x5 diagonal matrix with diagonal from the Omega_true
+Omega_direct = diag(diag(Omega_true));  % Create a diagonal matrix from the diagonal of Omega_true
+
+
+%% ── OLS helper ───────────────────────────────────────────────────────
+% Returns coefficients b and heteroskedasticity-robust SE
+ols = @(X,y) deal( (X'*X)\(X'*y), ...
+    sqrt(diag( ((X'*X)\(X'*(diag((y-X*((X'*X)\(X'*y))).^2)*X))/(X'*X)) )) );
+
+%% ── Direct LP ────────────────────────────────────────────────────────
+IRF_dir    = zeros(N, K, H+1);
+IRF_dir_se = zeros(N, K, H+1);
+
+for h = 0:H
+    t0 = p+1;  t1 = T-h;
+    Teff = t1 - t0 + 1;
+
+    dep = Y(t0+h:t1+h,:) - Y(t0-1:t1-1,:);     % Teff × N  (Y_{t+h}-Y_{t-1})
+
+    X_sh   = Omega_direct * eps(t0:t1,:);                       % Teff × K
+    X_ctrl = zeros(Teff, N*p);
+    for l = 1:p
+        X_ctrl(:, (l-1)*N+1:l*N) = Y(t0-l:t1-l,:);
+    end
+    X = [ones(Teff,1), X_sh, X_ctrl];            % Teff × (1+K+N*p)
+
+    for i = 1:N
+        [b, se] = ols(X, dep(:,i));
+        IRF_dir(i,:,h+1)    = b(2:K+1)';
+        IRF_dir_se(i,:,h+1) = se(2:K+1)';
+    end
+end
+
+%% ── Aggregate LP (PCA → Omega, then LP on aggr_t) ────────────────────
+
+B = A0_true * Omega_true;
+
+% Step 2: aggregate shock series
+aggr_hat = eps * B';                     % T×K
+
+% Step 3: LP on aggr_hat
+IRF_agg    = zeros(N, K+1, H+1);
+A_h_store  = zeros(H+1, N, K+1);
+
+for h = 0:H
+    t0 = p+1;  t1 = T-h;
+    Teff = t1 - t0 + 1;
+
+    dep    = Y(t0+h:t1+h,:) - Y(t0-1:t1-1,:);
+    X_ag   = aggr_hat(t0:t1,:);
+    X_ctrl = zeros(Teff, N*p);
+    for l = 1:p
+        X_ctrl(:, (l-1)*N+1:l*N) = Y(t0-l:t1-l,:);
+    end
+    X = [ones(Teff,1), X_ag, X_ctrl];
+
+    A_h = zeros(N, K);
+    for i = 1:N
+        b = X \ dep(:,i);
+        A_h(i,:) = b(2:K+1)';
+    end
+    A_h_store(h+1,:,:) = A_h;
+    IRF_agg(:,:,h+1) = A_h * Omega_est;       
+end
+
