@@ -1,0 +1,1746 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{setspace}
+\usepackage{xcolor}
+\usepackage{bm}
+\usepackage{tcolorbox}
+\usepackage{nicematrix}   % for labeled matrices
+\usepackage{graphicx}     % for \resizebox
+\tcbuselibrary{skins}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\geometry{margin=1.2in}
+\onehalfspacing
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\aggr}{\mathbf{aggr}}
+
+\newtcolorbox{keybox}[1][]{
+  colback=blue!5!white, colframe=blue!55!black,
+  fonttitle=\bfseries, title=#1, boxrule=0.8pt}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\begin{document}
+
+\begin{center}
+  {\LARGE \bfseries Mathematical Derivation:\\[0.5em]
+    Aggregate Shock in Matrix--Vector Form\\[0.4em]
+    and Its Linear Effect on Output}\\[1em]
+  {\large Step-by-Step Development}\\[0.4em]
+  \today
+\end{center}
+
+\tableofcontents
+\newpage
+
+% =============================================================================
+\section{The Five Structural Shocks: Shock Vector $\bm{\varepsilon}_t$}
+% =============================================================================
+
+We observe five distinct structural shocks at each time $t$:
+
+\begin{center}
+\begin{tabular}{clll}
+\toprule
+$k$ & \textbf{Shock} & \textbf{Symbol} & \textbf{Economic content} \\
+\midrule
+1 & Fiscal Policy         & $\varepsilon_{t}^{\mathrm{FP}}$     & Government spending / tax shocks \\
+2 & Monetary Policy       & $\varepsilon_{t}^{\mathrm{MP}}$     & Unexpected interest-rate changes  \\
+3 & Technology (TFP)      & $\varepsilon_{t}^{\mathrm{TFP}}$    & Total factor productivity shocks  \\
+4 & Oil Price             & $\varepsilon_{t}^{\mathrm{Oil}}$    & Commodity supply disturbances     \\
+5 & Financial Crisis      & $\varepsilon_{t}^{\mathrm{Crisis}}$ & Rare, large financial disruptions \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\bigskip
+\noindent Stack the five shocks into a \textbf{$5\times 1$ shock vector}:
+
+\begin{keybox}[Shock Vector]
+\begin{equation}\label{eq:shock_vec}
+  \bm{\varepsilon}_{t}
+  \;=\;
+  \begin{pmatrix}
+    \varepsilon_{t}^{\mathrm{FP}}     \\[4pt]
+    \varepsilon_{t}^{\mathrm{MP}}     \\[4pt]
+    \varepsilon_{t}^{\mathrm{TFP}}    \\[4pt]
+    \varepsilon_{t}^{\mathrm{Oil}}    \\[4pt]
+    \varepsilon_{t}^{\mathrm{Crisis}}
+  \end{pmatrix}
+  \;\in\;\R^{5\times 1}.
+\end{equation}
+\end{keybox}
+
+% =============================================================================
+\section{The Aggregate Shock Vector: $\aggr_t = \Omega\,\bm{\varepsilon}_t$}
+% =============================================================================
+
+The five individual shocks are combined through a
+\textbf{$5\times 5$ weight matrix} $\Omega$ to produce a
+\textbf{$5\times 1$ aggregate shock vector} $\aggr_t$:
+
+\begin{keybox}[Aggregate Shock]
+\begin{equation}\label{eq:aggr_def}
+  \underbrace{\aggr_{t}}_{5\times 1}
+  \;=\;
+  \underbrace{\Omega}_{5\times 5}
+  \;\underbrace{\bm{\varepsilon}_{t}}_{5\times 1}
+\end{equation}
+\end{keybox}
+
+\subsection{The Weight Matrix $\Omega$ (5\texttimes 5)}
+
+Each \emph{row} of $\Omega$ defines how one component of the aggregate
+shock is constructed from the five structural shocks:
+
+\begin{equation}\label{eq:Omega}
+  \Omega
+  =
+  \begin{pmatrix}
+    \omega_{11} & \omega_{12} & \omega_{13} & \omega_{14} & \omega_{15}\\[4pt]
+    \omega_{21} & \omega_{22} & \omega_{23} & \omega_{24} & \omega_{25}\\[4pt]
+    \omega_{31} & \omega_{32} & \omega_{33} & \omega_{34} & \omega_{35}\\[4pt]
+    \omega_{41} & \omega_{42} & \omega_{43} & \omega_{44} & \omega_{45}\\[4pt]
+    \omega_{51} & \omega_{52} & \omega_{53} & \omega_{54} & \omega_{55}
+  \end{pmatrix}
+  \;\in\;\R^{5\times 5}.
+\end{equation}
+
+\noindent The $(i,k)$ entry $\omega_{ik}$ is the weight that the
+$i$-th aggregate component places on the $k$-th structural shock
+$\varepsilon_{t}^{k}$.
+
+\subsection{Expanded Form}
+
+Writing out equation~\eqref{eq:aggr_def} element by element, the
+$i$-th component of $\aggr_{t}$ is:
+
+\begin{equation}\label{eq:aggr_row}
+  [\aggr_{t}]_{i}
+  = \sum_{k=1}^{5} \omega_{ik}\,\varepsilon_{t}^{k}
+  = \omega_{i1}\,\varepsilon_{t}^{\mathrm{FP}}
+  + \omega_{i2}\,\varepsilon_{t}^{\mathrm{MP}}
+  + \omega_{i3}\,\varepsilon_{t}^{\mathrm{TFP}}
+  + \omega_{i4}\,\varepsilon_{t}^{\mathrm{Oil}}
+  + \omega_{i5}\,\varepsilon_{t}^{\mathrm{Crisis}},
+  \quad i=1,\ldots,5.
+\end{equation}
+
+\subsection{Covariance Structure of $\aggr_t$}
+
+Let $\Sigma_{\varepsilon} = \E[\bm{\varepsilon}_{t}\bm{\varepsilon}_{t}^{\top}]$
+be the $5\times 5$ covariance matrix of the structural shocks.
+The covariance matrix of the aggregate shock vector is:
+\begin{equation}\label{eq:cov_aggr}
+  \Sigma_{\aggr}
+  = \E\!\left[\aggr_{t}\,\aggr_{t}^{\top}\right]
+  = \Omega\,\Sigma_{\varepsilon}\,\Omega^{\top}
+  \;\in\;\R^{5\times 5}.
+\end{equation}
+
+\begin{itemize}
+  \item If the structural shocks are orthonormal,
+        $\Sigma_{\varepsilon}=I_{5}$, then
+        $\Sigma_{\aggr}=\Omega\Omega^{\top}$.
+  \item If additionally $\Omega$ is orthogonal ($\Omega\Omega^{\top}=I$),
+        the components of $\aggr_{t}$ are uncorrelated with unit
+        variance---analogous to PCA.
+\end{itemize}
+
+% =============================================================================
+\section{Output Equation: $\mathbf{Y}_t = A_t\,\aggr_t$}
+% =============================================================================
+
+\subsection{Outcome Vector $\mathbf{Y}_t$ (2\texttimes 1)}
+
+We focus on two macroeconomic outcomes:
+
+\begin{equation}\label{eq:Y_def}
+  \mathbf{Y}_{t}
+  =
+  \begin{pmatrix} y_{1,t} \\[4pt] y_{2,t} \end{pmatrix}
+  =
+  \begin{pmatrix}
+    \log\mathrm{IP}_{t}\\[4pt] u_{t}
+  \end{pmatrix}
+  \;\in\;\R^{2\times 1},
+\end{equation}
+
+where $\log\mathrm{IP}_{t}$ is log Industrial Production and $u_{t}$ is
+the unemployment rate.
+
+\subsection{Response Matrix $A_t$ (2\texttimes 5)}
+
+The $2\times 5$ matrix $A_t$ maps the five-dimensional aggregate shock
+vector to the two outcome variables:
+
+\begin{equation}\label{eq:A_mat}
+  A_t
+  =
+  \begin{pmatrix}
+    a_{11} & a_{12} & a_{13} & a_{14} & a_{15}\\[4pt]
+    a_{21} & a_{22} & a_{23} & a_{24} & a_{25}
+  \end{pmatrix}
+  \;\in\;\R^{2\times 5}.
+\end{equation}
+
+\noindent The entry $a_{ij}$ captures how the $j$-th aggregate component
+affects outcome $y_{i}$:
+\begin{itemize}
+  \item \textbf{Row 1} ($a_{1,\cdot}$): response of $\log\mathrm{IP}$ to each
+        aggregate component.
+  \item \textbf{Row 2} ($a_{2,\cdot}$): response of unemployment $u$ to each
+        aggregate component.
+\end{itemize}
+
+\subsection{The Linear Output Model}
+
+\begin{keybox}[Output Equation]
+\begin{equation}\label{eq:output}
+  \underbrace{\mathbf{Y}_{t}}_{2\times 1}
+  \;=\;
+  \underbrace{A_t}_{2\times 5}
+  \;\underbrace{\aggr_{t}}_{5\times 1}
+  \;+\;
+  \underbrace{\bm{\omega}_{t}}_{2\times 1}
+\end{equation}
+\end{keybox}
+
+\noindent where $\bm{\omega}_{t}$ is a $2\times 1$ vector of idiosyncratic
+errors orthogonal to $\aggr_t$.
+
+\subsection{Full Matrix Expansion}
+
+Substituting $\aggr_{t}=\Omega\,\bm{\varepsilon}_{t}$
+into \eqref{eq:output}:
+
+\begin{equation}\label{eq:output_full}
+  \underbrace{\mathbf{Y}_{t}}_{2\times 1}
+  \;=\;
+  \underbrace{A_t}_{2\times 5}
+  \;\underbrace{\Omega}_{5\times 5}
+  \;\underbrace{\bm{\varepsilon}_{t}}_{5\times 1}
+  \;+\;
+  \bm{\omega}_{t}
+\end{equation}
+
+Written in explicit matrix-vector form:
+
+\begin{equation}\label{eq:output_explicit}
+  \begin{pmatrix} y_{1,t}\\[4pt] y_{2,t} \end{pmatrix}
+  =
+  \begin{pmatrix}
+    a_{11} & a_{12} & a_{13} & a_{14} & a_{15}\\[4pt]
+    a_{21} & a_{22} & a_{23} & a_{24} & a_{25}
+  \end{pmatrix}
+  \begin{pmatrix}
+    \omega_{11} & \omega_{12} & \omega_{13} & \omega_{14} & \omega_{15}\\[4pt]
+    \omega_{21} & \omega_{22} & \omega_{23} & \omega_{24} & \omega_{25}\\[4pt]
+    \omega_{31} & \omega_{32} & \omega_{33} & \omega_{34} & \omega_{35}\\[4pt]
+    \omega_{41} & \omega_{42} & \omega_{43} & \omega_{44} & \omega_{45}\\[4pt]
+    \omega_{51} & \omega_{52} & \omega_{53} & \omega_{54} & \omega_{55}
+  \end{pmatrix}
+  \begin{pmatrix}
+    \varepsilon_{t}^{\mathrm{FP}}\\[4pt]
+    \varepsilon_{t}^{\mathrm{MP}}\\[4pt]
+    \varepsilon_{t}^{\mathrm{TFP}}\\[4pt]
+    \varepsilon_{t}^{\mathrm{Oil}}\\[4pt]
+    \varepsilon_{t}^{\mathrm{Crisis}}
+  \end{pmatrix}
+  +
+  \begin{pmatrix}\omega_{1,t}\\[4pt]\omega_{2,t}\end{pmatrix}
+\end{equation}
+
+\subsection{Reduced-Form Mapping}
+
+Define the \textbf{reduced-form response matrix}:
+\begin{equation}\label{eq:B_reduced}
+  B_t
+  \;\equiv\;
+  A_t\,\Omega
+  \;\in\;\R^{2\times 5}.
+\end{equation}
+
+Then the model simplifies to:
+\begin{equation}\label{eq:output_reduced}
+  \mathbf{Y}_{t}
+  = B_t\,\bm{\varepsilon}_{t} + \bm{\omega}_{t},
+\end{equation}
+where the $(i,k)$ entry of $B_t$, denoted $b_{ik}$, is the
+\textbf{total effect} of structural shock $k$ on outcome $y_{i}$:
+
+\begin{equation}\label{eq:bik}
+  b_{ik}
+  = \sum_{j=1}^{5} a_{ij}\,\omega_{jk},
+  \qquad i=1,2,\quad k=1,\ldots,5.
+\end{equation}
+
+% =============================================================================
+\section{Dimension Accounting}
+% =============================================================================
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{lcll}
+\toprule
+\textbf{Object} & \textbf{Dimension} & \textbf{Role} & \textbf{Content} \\
+\midrule
+$\bm{\varepsilon}_{t}$ & $5\times 1$ & Structural shocks  & FP, MP, TFP, Oil, Crisis \\
+$\Omega$               & $5\times 5$ & Weight matrix      & Combines shocks into aggregates \\
+$\aggr_{t}=\Omega\bm{\varepsilon}_{t}$ & $5\times 1$ & Aggregate shock  & Five aggregate components \\
+$A_t$                  & $2\times 5$ & Response matrix    & Maps aggregates to outcomes \\
+$\mathbf{Y}_{t}$       & $2\times 1$ & Outcome vector     & $\log\mathrm{IP}$, unemployment \\
+$B_t = A_t\Omega$      & $2\times 5$ & Reduced-form matrix & Total shock-to-outcome effects \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\bigskip
+\noindent Dimension check of the output equation:
+\[
+  \underbrace{(2\times 1)}_{\mathbf{Y}_t}
+  =
+  \underbrace{(2\times 5)}_{A_t}
+  \times
+  \underbrace{(5\times 5)}_{\Omega}
+  \times
+  \underbrace{(5\times 1)}_{\bm{\varepsilon}_t}
+  \quad\checkmark
+\]
+
+% =============================================================================
+\section{Why $\Omega$ Cannot Be a Diagonal Matrix}
+% =============================================================================
+
+A natural simplification would be to set $\Omega = \mathrm{diag}(\omega_1,\ldots,\omega_5)$,
+so that each aggregate component is merely a rescaled version of exactly one structural
+shock.  We argue---on identification, economic, and statistical grounds---that this
+restriction is \textbf{invalid}.
+
+% ─────────────────────────────────────────────
+\subsection{Argument 1: Observational Non-Identification}
+% ─────────────────────────────────────────────
+
+\begin{proposition}[Non-Identification under Diagonal $\Omega$]
+If $\Omega$ is restricted to be diagonal, then $A_t$ and $\Omega$ cannot be
+separately identified from the reduced-form response matrix
+$B_t = A_t\Omega$.
+\end{proposition}
+
+\begin{proof}
+Let $\Omega = D \equiv \mathrm{diag}(\omega_1,\ldots,\omega_5)$.  Then
+\[
+  B_t = A_t D.
+\]
+For any scalar $c_k \neq 0$, replace $\omega_k \to c_k\omega_k$ and
+$a_{\cdot k} \to a_{\cdot k}/c_k$ (rescale the $k$-th column of $A_t$
+by $1/c_k$).  The product $B_t$ is unchanged:
+\[
+  \tilde A_t \tilde D
+  = \left(\frac{A_t}{c_k}\right) (c_k D)
+  = A_t D = B_t.
+\]
+Since infinitely many pairs $(\tilde A_t, \tilde D)$ produce the same observable
+$B_t$, neither $A_t$ nor $\Omega$ is identified separately.  A normalization
+such as $\omega_k = 1$ for all $k$ is required---which trivially collapses
+$\Omega$ to the identity and makes the matrix redundant.
+\end{proof}
+
+\begin{remark}
+The identification problem vanishes when $\Omega$ has \emph{off-diagonal} elements,
+because these cross-loadings impose non-trivial cross-equation restrictions that
+pin down $\Omega$ separately from $A_t$.
+\end{remark}
+
+% ─────────────────────────────────────────────
+\subsection{Argument 2: Economic Cross-Shock Transmission}
+% ─────────────────────────────────────────────
+
+A diagonal $\Omega$ asserts that shock $k$ affects \emph{only} aggregate component
+$k$ and has \textbf{zero influence} on all other aggregate channels.  This is
+economically implausible for our five shocks:
+
+\bigskip
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{p{3.2cm} p{9cm}}
+\toprule
+\textbf{Shock} & \textbf{Cross-channel transmission (off-diagonal $\omega_{ij}\neq 0$)} \\
+\midrule
+Oil Price ($\varepsilon^{\mathrm{Oil}}$)
+  & Raises marginal costs $\Rightarrow$ central bank raises rates
+    ($\varepsilon^{\mathrm{MP}}$ channel activated).
+    Also reduces TFP in energy-intensive sectors
+    ($\varepsilon^{\mathrm{TFP}}$ channel activated). \\
+Financial Crisis ($\varepsilon^{\mathrm{Crisis}}$)
+  & Triggers emergency fiscal expansions ($\varepsilon^{\mathrm{FP}}$),
+    extraordinary monetary easing ($\varepsilon^{\mathrm{MP}}$), and
+    supply-side disruptions ($\varepsilon^{\mathrm{TFP}}$)
+    \emph{simultaneously}. \\
+Monetary Policy ($\varepsilon^{\mathrm{MP}}$)
+  & Rate changes alter government borrowing costs, feeding back into
+    fiscal dynamics ($\varepsilon^{\mathrm{FP}}$ channel). \\
+Fiscal Policy ($\varepsilon^{\mathrm{FP}}$)
+  & Government spending shocks affect aggregate demand and signal future
+    monetary accommodation ($\varepsilon^{\mathrm{MP}}$ channel). \\
+TFP ($\varepsilon^{\mathrm{TFP}}$)
+  & Productivity gains alter the natural rate of interest and thus
+    optimal monetary policy ($\varepsilon^{\mathrm{MP}}$ channel). \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\bigskip\noindent
+These are not exotic second-order effects; they are first-order channels documented
+in the VAR and DSGE literatures (Bernanke, Gertler \& Watson 1997; Blanchard \&
+Gal\'i 2007; Ramey 2011).  Setting $\omega_{ij}=0$ for $i\neq j$ imposes that all
+such channels are absent, a restriction flatly rejected by the data.
+
+% ─────────────────────────────────────────────
+\subsection{Argument 3: Statistical Rejection via Covariance Structure}
+% ─────────────────────────────────────────────
+
+\begin{lemma}[Off-Diagonal Covariance Implies Non-Diagonal $\Omega$]
+Suppose the structural shocks are orthonormal, $\Sigma_\varepsilon = I_5$.
+If the observed covariance matrix of $\aggr_t$ has any non-zero off-diagonal
+elements, then $\Omega$ cannot be diagonal.
+\end{lemma}
+
+\begin{proof}
+From equation~\eqref{eq:cov_aggr} with $\Sigma_\varepsilon = I_5$:
+\[
+  \Sigma_{\aggr} = \Omega\Omega^{\top}.
+\]
+If $\Omega = D$ is diagonal, then $DD^{\top} = \mathrm{diag}(\omega_1^2,\ldots,\omega_5^2)$
+is also diagonal---all off-diagonal entries of $\Sigma_{\aggr}$ would be zero.
+Hence any empirically observed $[\Sigma_{\aggr}]_{ij}\neq 0$ for $i\neq j$
+is a direct contradiction of $\Omega$ being diagonal.
+\end{proof}
+
+\noindent In practice, the five macroeconomic shocks co-move (e.g., crises cluster with
+monetary easing, oil shocks co-occur with recessions), so the sample covariance of the
+estimated shock series will have non-zero off-diagonal terms, directly rejecting
+$H_0: \Omega = \mathrm{diag}(\cdot)$.
+
+% ─────────────────────────────────────────────
+\subsection{Argument 4: PCA Generically Yields a Non-Diagonal $\Omega$}
+% ─────────────────────────────────────────────
+
+A natural estimation strategy is to extract $\Omega$ as the matrix of eigenvectors
+of the cross-shock covariance matrix (Principal Component Analysis).  Let
+$\Sigma_\varepsilon = V\Lambda V^{\top}$ be the eigen-decomposition, where $\Lambda$
+is diagonal and $V$ is the orthogonal matrix of eigenvectors.  Setting
+$\Omega = V^{\top}$ yields orthonormal aggregate components:
+
+\begin{equation}
+  \Sigma_{\aggr}
+  = \Omega\Sigma_\varepsilon\Omega^{\top}
+  = V^{\top} V \Lambda V^{\top} V
+  = \Lambda \quad (\text{diagonal}).
+\end{equation}
+
+\noindent However, $V^{\top}$ is \emph{generically non-diagonal}: each principal
+component loads on all five shocks unless the shocks happen to arrive already
+orthogonal with zero cross-covariance---an assumption that must be imposed, not
+discovered.  Thus the PCA estimator of $\Omega$ is non-diagonal unless a very
+special and implausible structure holds.
+
+% ─────────────────────────────────────────────
+\subsection{Summary: Why $\Omega$ Must Be a Full Matrix}
+% ─────────────────────────────────────────────
+
+\begin{keybox}[Conclusion: $\Omega$ Is Non-Diagonal]
+\begin{enumerate}
+  \item \textbf{Identification}: Diagonal $\Omega$ is not separately identified
+        from $A_t$; the model is under-determined.
+  \item \textbf{Economics}: Cross-shock transmission---oil $\to$ MP,
+        crisis $\to$ FP + MP + TFP, fiscal $\to$ MP---is
+        empirically established and inconsistent with $\omega_{ij}=0$.
+  \item \textbf{Statistics}: Non-zero off-diagonal entries in the
+        covariance of $\aggr_t$ (observable) directly reject the diagonal
+        restriction.
+  \item \textbf{PCA}: The eigenvector matrix of any non-diagonal
+        $\Sigma_\varepsilon$ is generically a full matrix, giving a
+        non-diagonal $\Omega$.
+\end{enumerate}
+Therefore, $\Omega\in\R^{5\times 5}$ must be treated as a \textbf{full,
+unrestricted matrix}, and its estimation must exploit the cross-shock
+covariance structure.
+\end{keybox}
+
+% =============================================================================
+\section{Explicit Multiplication: $A_t\,\Omega \to B_t$ and $B_t\,\bm{\varepsilon}_t \to \mathbf{Y}_t$}
+% =============================================================================
+
+We now carry out the multiplication step by step.
+
+% ─────────────────────────────────────────────
+\subsection{Step 1 --- Multiply $A_t\,(2\times5)$ by $\Omega\,(5\times5)$}
+% ─────────────────────────────────────────────
+
+\begin{equation}\label{eq:AtOmega}
+  A_t\,\Omega
+  =
+  \begin{pmatrix}
+    a_{11} & a_{12} & a_{13} & a_{14} & a_{15}\\[4pt]
+    a_{21} & a_{22} & a_{23} & a_{24} & a_{25}
+  \end{pmatrix}
+  \begin{pmatrix}
+    \omega_{11} & \omega_{12} & \omega_{13} & \omega_{14} & \omega_{15}\\[4pt]
+    \omega_{21} & \omega_{22} & \omega_{23} & \omega_{24} & \omega_{25}\\[4pt]
+    \omega_{31} & \omega_{32} & \omega_{33} & \omega_{34} & \omega_{35}\\[4pt]
+    \omega_{41} & \omega_{42} & \omega_{43} & \omega_{44} & \omega_{45}\\[4pt]
+    \omega_{51} & \omega_{52} & \omega_{53} & \omega_{54} & \omega_{55}
+  \end{pmatrix}
+\end{equation}
+
+The general $(i,j)$ entry of the product is:
+\begin{equation}\label{eq:bij_general}
+  [A_t\Omega]_{ij}
+  \;=\;
+  \sum_{k=1}^{5} a_{ik}\,\omega_{kj},
+  \qquad i=1,2;\quad j=1,\ldots,5.
+\end{equation}
+
+% ─────────────────────────────────────────────
+\subsection{Step 2 --- The Resulting $2\times5$ Matrix $B_t$}
+% ─────────────────────────────────────────────
+
+Writing out all ten entries explicitly:
+
+\begin{keybox}[Reduced-Form Response Matrix $B_t = A_t\Omega \;\in\;\R^{2\times5}$]
+{\small
+\begin{equation}\label{eq:Bt_explicit}
+  B_t =
+  \begin{pmatrix}
+    \displaystyle\sum_{k=1}^{5}a_{1k}\omega_{k1} &
+    \displaystyle\sum_{k=1}^{5}a_{1k}\omega_{k2} &
+    \displaystyle\sum_{k=1}^{5}a_{1k}\omega_{k3} &
+    \displaystyle\sum_{k=1}^{5}a_{1k}\omega_{k4} &
+    \displaystyle\sum_{k=1}^{5}a_{1k}\omega_{k5} \\[12pt]
+    \displaystyle\sum_{k=1}^{5}a_{2k}\omega_{k1} &
+    \displaystyle\sum_{k=1}^{5}a_{2k}\omega_{k2} &
+    \displaystyle\sum_{k=1}^{5}a_{2k}\omega_{k3} &
+    \displaystyle\sum_{k=1}^{5}a_{2k}\omega_{k4} &
+    \displaystyle\sum_{k=1}^{5}a_{2k}\omega_{k5}
+  \end{pmatrix}
+\end{equation}
+}
+\end{keybox}
+
+\noindent Expanding each entry in full (row 1 $=$ log IP; row 2 $=$ unemployment):
+
+\begin{align}
+  b_{1j} &= a_{11}\omega_{1j} + a_{12}\omega_{2j} + a_{13}\omega_{3j}
+           + a_{14}\omega_{4j} + a_{15}\omega_{5j},
+  \quad j=1,\ldots,5, \label{eq:b1j}\\[6pt]
+  b_{2j} &= a_{21}\omega_{1j} + a_{22}\omega_{2j} + a_{23}\omega_{3j}
+           + a_{24}\omega_{4j} + a_{25}\omega_{5j},
+  \quad j=1,\ldots,5. \label{eq:b2j}
+\end{align}
+
+Labelling the columns by their corresponding structural shock:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{cccccc}
+\toprule
+ & $j=1$ (FP) & $j=2$ (MP) & $j=3$ (TFP) & $j=4$ (Oil) & $j=5$ (Crisis)\\
+\midrule
+$b_{1j}$ & total IP response & to FP shock & to TFP shock & to Oil shock & to Crisis\\
+$b_{2j}$ & total $u$ response & to FP shock & to TFP shock & to Oil shock & to Crisis\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\bigskip\noindent
+\textbf{Key insight:} each $b_{ij}$ is a \emph{weighted sum over all five rows of $\Omega$},
+mixing every structural shock channel.  This confirms that $\Omega$ cannot be
+diagonal---otherwise $b_{ij} = a_{ij}\omega_{jj}$ and all cross-channel information
+is lost.
+
+% ─────────────────────────────────────────────
+\subsection{Step 3 --- Multiply $B_t\,(2\times5)$ by $\bm{\varepsilon}_t\,(5\times1)$}
+% ─────────────────────────────────────────────
+
+\begin{keybox}[Final Output: $\mathbf{Y}_t = B_t\,\bm{\varepsilon}_t \;\in\;\R^{2\times1}$]
+\begin{equation}\label{eq:Yt_final}
+  \begin{pmatrix} y_{1,t}\\[6pt] y_{2,t} \end{pmatrix}
+  =
+  \begin{pmatrix}
+    b_{11} & b_{12} & b_{13} & b_{14} & b_{15}\\[4pt]
+    b_{21} & b_{22} & b_{23} & b_{24} & b_{25}
+  \end{pmatrix}
+  \begin{pmatrix}
+    \varepsilon_{t}^{\mathrm{FP}}\\[4pt]
+    \varepsilon_{t}^{\mathrm{MP}}\\[4pt]
+    \varepsilon_{t}^{\mathrm{TFP}}\\[4pt]
+    \varepsilon_{t}^{\mathrm{Oil}}\\[4pt]
+    \varepsilon_{t}^{\mathrm{Crisis}}
+  \end{pmatrix}
+  +
+  \begin{pmatrix}\omega_{1,t}\\[6pt]\omega_{2,t}\end{pmatrix}
+\end{equation}
+\end{keybox}
+
+\noindent Writing out the two scalar equations explicitly:
+
+\begin{align}
+  \log\mathrm{IP}_{t}
+  &= b_{11}\,\varepsilon_{t}^{\mathrm{FP}}
+   + b_{12}\,\varepsilon_{t}^{\mathrm{MP}}
+   + b_{13}\,\varepsilon_{t}^{\mathrm{TFP}}
+   + b_{14}\,\varepsilon_{t}^{\mathrm{Oil}}
+   + b_{15}\,\varepsilon_{t}^{\mathrm{Crisis}}
+   + \omega_{1,t},\label{eq:IP_eq}\\[8pt]
+  u_{t}
+  &= b_{21}\,\varepsilon_{t}^{\mathrm{FP}}
+   + b_{22}\,\varepsilon_{t}^{\mathrm{MP}}
+   + b_{23}\,\varepsilon_{t}^{\mathrm{TFP}}
+   + b_{24}\,\varepsilon_{t}^{\mathrm{Oil}}
+   + b_{25}\,\varepsilon_{t}^{\mathrm{Crisis}}
+   + \omega_{2,t}.\label{eq:u_eq}
+\end{align}
+
+% ─────────────────────────────────────────────
+\subsection{Complete Chain in One Display}
+% ─────────────────────────────────────────────
+
+Putting all three matrices together in one equation:
+
+\begin{equation}\label{eq:full_chain}
+  \underbrace{
+  \begin{pmatrix} y_{1,t}\\[6pt] y_{2,t} \end{pmatrix}
+  }_{2\times1}
+  =
+  \underbrace{
+  \begin{pmatrix}
+    a_{11} & a_{12} & a_{13} & a_{14} & a_{15}\\[4pt]
+    a_{21} & a_{22} & a_{23} & a_{24} & a_{25}
+  \end{pmatrix}
+  }_{A_t:\;2\times5}
+  \underbrace{
+  \begin{pmatrix}
+    \omega_{11} & \omega_{12} & \omega_{13} & \omega_{14} & \omega_{15}\\[4pt]
+    \omega_{21} & \omega_{22} & \omega_{23} & \omega_{24} & \omega_{25}\\[4pt]
+    \omega_{31} & \omega_{32} & \omega_{33} & \omega_{34} & \omega_{35}\\[4pt]
+    \omega_{41} & \omega_{42} & \omega_{43} & \omega_{44} & \omega_{45}\\[4pt]
+    \omega_{51} & \omega_{52} & \omega_{53} & \omega_{54} & \omega_{55}
+  \end{pmatrix}
+  }_{\Omega:\;5\times5}
+  \underbrace{
+  \begin{pmatrix}
+    \varepsilon_{t}^{\mathrm{FP}}\\[4pt]
+    \varepsilon_{t}^{\mathrm{MP}}\\[4pt]
+    \varepsilon_{t}^{\mathrm{TFP}}\\[4pt]
+    \varepsilon_{t}^{\mathrm{Oil}}\\[4pt]
+    \varepsilon_{t}^{\mathrm{Crisis}}
+  \end{pmatrix}
+  }_{\bm{\varepsilon}_t:\;5\times1}
+  +
+  \bm{\omega}_t
+\end{equation}
+
+\bigskip\noindent
+\textbf{Dimension check:}
+\[
+  \underbrace{(2\times1)}_{\mathbf{Y}_t}
+  =
+  \underbrace{(2\times5)}_{A_t}
+  \times
+  \underbrace{(5\times5)}_{\Omega}
+  \times
+  \underbrace{(5\times1)}_{\bm{\varepsilon}_t}
+  =
+  \underbrace{(2\times5)}_{B_t}
+  \times
+  \underbrace{(5\times1)}_{\bm{\varepsilon}_t}
+  = (2\times1) \quad\checkmark
+\]
+
+% =============================================================================
+\section{Impulse Response Function (IRF): Full Expanded Derivation}
+% =============================================================================
+
+\subsection{Dynamic LP Model at Horizon $h$}
+
+To trace how outcomes respond \emph{over time} to a shock, we extend the
+static model to horizon $h = 0, 1, 2, \ldots, H$.  At each horizon $h$,
+the $h$-period-ahead cumulative change in outcomes is:
+
+\begin{keybox}[LP at Horizon $h$]
+\begin{equation}\label{eq:LP_h}
+  \underbrace{\mathbf{Y}_{t+h} - \mathbf{Y}_{t-1}}_{2\times1}
+  \;=\;
+  \bm{\alpha}_h
+  \;+\;
+  \underbrace{A_{h}}_{2\times5}
+  \;\underbrace{\Omega}_{5\times5}
+  \;\underbrace{\bm{\varepsilon}_{t}}_{5\times1}
+  \;+\;
+  \underbrace{\mathbf{u}_{t+h}}_{2\times1},
+  \qquad h = 0,1,\ldots,H
+\end{equation}
+\end{keybox}
+
+\noindent where:
+\begin{itemize}
+  \item $A_{h} \in \R^{2\times5}$ is the \textbf{horizon-$h$ response matrix}
+        (estimated separately for each $h$),
+  \item $\Omega \in \R^{5\times5}$ is the \textbf{fixed weight matrix} (same
+        across all horizons, estimated once),
+  \item $\mathbf{u}_{t+h}$ is the LP residual, uncorrelated with $\bm{\varepsilon}_t$.
+\end{itemize}
+
+\subsection{IRF Definition}
+
+The \textbf{Impulse Response of outcome $y_{i}$ to shock $\varepsilon^{k}$
+at horizon $h$} is:
+
+\begin{equation}\label{eq:IRF_def}
+  \mathrm{IRF}_{i,k}(h)
+  \;\equiv\;
+  \frac{\partial\, y_{i,t+h}}{\partial\, \varepsilon_{t}^{k}}
+  \;=\;
+  [A_{h}\,\Omega]_{ik}
+  \;=\;
+  \sum_{j=1}^{5} a_{ij}^{(h)}\,\omega_{jk},
+  \quad i=1,2;\; k=1,\ldots,5.
+\end{equation}
+
+The full \textbf{$2\times5$ IRF matrix at horizon $h$} is therefore:
+
+\begin{equation}\label{eq:IRF_matrix}
+  \underbrace{\mathbf{IRF}(h)}_{2\times5}
+  \;=\;
+  \underbrace{A_{h}}_{2\times5}\;\underbrace{\Omega}_{5\times5}
+\end{equation}
+
+\subsection{Full Expansion of $A_h\,\Omega$: Every Entry Visible}
+
+Writing the product out completely with no shorthand:
+
+\begin{equation}\label{eq:IRF_full}
+\mathbf{IRF}(h)
+=
+\begin{pmatrix}
+  a_{11}^{(h)} & a_{12}^{(h)} & a_{13}^{(h)} & a_{14}^{(h)} & a_{15}^{(h)}\\[6pt]
+  a_{21}^{(h)} & a_{22}^{(h)} & a_{23}^{(h)} & a_{24}^{(h)} & a_{25}^{(h)}
+\end{pmatrix}
+\begin{pmatrix}
+  \omega_{11} & \omega_{12} & \omega_{13} & \omega_{14} & \omega_{15}\\[4pt]
+  \omega_{21} & \omega_{22} & \omega_{23} & \omega_{24} & \omega_{25}\\[4pt]
+  \omega_{31} & \omega_{32} & \omega_{33} & \omega_{34} & \omega_{35}\\[4pt]
+  \omega_{41} & \omega_{42} & \omega_{43} & \omega_{44} & \omega_{45}\\[4pt]
+  \omega_{51} & \omega_{52} & \omega_{53} & \omega_{54} & \omega_{55}
+\end{pmatrix}
+\end{equation}
+
+The resulting $2\times5$ matrix in full, with every multiplication visible:
+
+\begin{equation}\label{eq:IRF_result}
+\mathbf{IRF}(h) =
+\resizebox{\linewidth}{!}{$\displaystyle
+\begin{pmatrix}
+  a_{11}^{(h)}\omega_{11}+a_{12}^{(h)}\omega_{21}+a_{13}^{(h)}\omega_{31}+a_{14}^{(h)}\omega_{41}+a_{15}^{(h)}\omega_{51} &
+  a_{11}^{(h)}\omega_{12}+a_{12}^{(h)}\omega_{22}+a_{13}^{(h)}\omega_{32}+a_{14}^{(h)}\omega_{42}+a_{15}^{(h)}\omega_{52} &
+  a_{11}^{(h)}\omega_{13}+a_{12}^{(h)}\omega_{23}+a_{13}^{(h)}\omega_{33}+a_{14}^{(h)}\omega_{43}+a_{15}^{(h)}\omega_{53} &
+  a_{11}^{(h)}\omega_{14}+a_{12}^{(h)}\omega_{24}+a_{13}^{(h)}\omega_{34}+a_{14}^{(h)}\omega_{44}+a_{15}^{(h)}\omega_{54} &
+  a_{11}^{(h)}\omega_{15}+a_{12}^{(h)}\omega_{25}+a_{13}^{(h)}\omega_{35}+a_{14}^{(h)}\omega_{45}+a_{15}^{(h)}\omega_{55} \\[8pt]
+  a_{21}^{(h)}\omega_{11}+a_{22}^{(h)}\omega_{21}+a_{23}^{(h)}\omega_{31}+a_{24}^{(h)}\omega_{41}+a_{25}^{(h)}\omega_{51} &
+  a_{21}^{(h)}\omega_{12}+a_{22}^{(h)}\omega_{22}+a_{23}^{(h)}\omega_{32}+a_{24}^{(h)}\omega_{42}+a_{25}^{(h)}\omega_{52} &
+  a_{21}^{(h)}\omega_{13}+a_{22}^{(h)}\omega_{23}+a_{23}^{(h)}\omega_{33}+a_{24}^{(h)}\omega_{43}+a_{25}^{(h)}\omega_{53} &
+  a_{21}^{(h)}\omega_{14}+a_{22}^{(h)}\omega_{24}+a_{23}^{(h)}\omega_{34}+a_{24}^{(h)}\omega_{44}+a_{25}^{(h)}\omega_{54} &
+  a_{21}^{(h)}\omega_{15}+a_{22}^{(h)}\omega_{25}+a_{23}^{(h)}\omega_{35}+a_{24}^{(h)}\omega_{45}+a_{25}^{(h)}\omega_{55}
+\end{pmatrix}$}
+\end{equation}
+
+\subsection{IRF for Each Shock: Full Scalar Equations}
+
+For each structural shock $k$, the \textbf{two scalar IRFs at horizon $h$}
+are written below with every $a_{ij}^{(h)}$ and $\omega_{jk}$ term
+fully visible.
+
+\bigskip
+\noindent\textbf{Shock 1 --- Fiscal Policy ($k=1$, column of $\bm{\varepsilon}_t^{\mathrm{FP}}$):}
+\begin{align}
+  \mathrm{IRF}_{\log\mathrm{IP},\,\mathrm{FP}}(h)
+  &= a_{11}^{(h)}\,\omega_{11}
+   + a_{12}^{(h)}\,\omega_{21}
+   + a_{13}^{(h)}\,\omega_{31}
+   + a_{14}^{(h)}\,\omega_{41}
+   + a_{15}^{(h)}\,\omega_{51} \label{eq:irf_ip_fp}\\[4pt]
+  \mathrm{IRF}_{u,\,\mathrm{FP}}(h)
+  &= a_{21}^{(h)}\,\omega_{11}
+   + a_{22}^{(h)}\,\omega_{21}
+   + a_{23}^{(h)}\,\omega_{31}
+   + a_{24}^{(h)}\,\omega_{41}
+   + a_{25}^{(h)}\,\omega_{51} \label{eq:irf_u_fp}
+\end{align}
+
+\bigskip
+\noindent\textbf{Shock 2 --- Monetary Policy ($k=2$, column of $\bm{\varepsilon}_t^{\mathrm{MP}}$):}
+\begin{align}
+  \mathrm{IRF}_{\log\mathrm{IP},\,\mathrm{MP}}(h)
+  &= a_{11}^{(h)}\,\omega_{12}
+   + a_{12}^{(h)}\,\omega_{22}
+   + a_{13}^{(h)}\,\omega_{32}
+   + a_{14}^{(h)}\,\omega_{42}
+   + a_{15}^{(h)}\,\omega_{52} \label{eq:irf_ip_mp}\\[4pt]
+  \mathrm{IRF}_{u,\,\mathrm{MP}}(h)
+  &= a_{21}^{(h)}\,\omega_{12}
+   + a_{22}^{(h)}\,\omega_{22}
+   + a_{23}^{(h)}\,\omega_{32}
+   + a_{24}^{(h)}\,\omega_{42}
+   + a_{25}^{(h)}\,\omega_{52} \label{eq:irf_u_mp}
+\end{align}
+
+\bigskip
+\noindent\textbf{Shock 3 --- Technology / TFP ($k=3$, column of $\bm{\varepsilon}_t^{\mathrm{TFP}}$):}
+\begin{align}
+  \mathrm{IRF}_{\log\mathrm{IP},\,\mathrm{TFP}}(h)
+  &= a_{11}^{(h)}\,\omega_{13}
+   + a_{12}^{(h)}\,\omega_{23}
+   + a_{13}^{(h)}\,\omega_{33}
+   + a_{14}^{(h)}\,\omega_{43}
+   + a_{15}^{(h)}\,\omega_{53} \label{eq:irf_ip_tfp}\\[4pt]
+  \mathrm{IRF}_{u,\,\mathrm{TFP}}(h)
+  &= a_{21}^{(h)}\,\omega_{13}
+   + a_{22}^{(h)}\,\omega_{23}
+   + a_{23}^{(h)}\,\omega_{33}
+   + a_{24}^{(h)}\,\omega_{43}
+   + a_{25}^{(h)}\,\omega_{53} \label{eq:irf_u_tfp}
+\end{align}
+
+\bigskip
+\noindent\textbf{Shock 4 --- Oil Price ($k=4$, column of $\bm{\varepsilon}_t^{\mathrm{Oil}}$):}
+\begin{align}
+  \mathrm{IRF}_{\log\mathrm{IP},\,\mathrm{Oil}}(h)
+  &= a_{11}^{(h)}\,\omega_{14}
+   + a_{12}^{(h)}\,\omega_{24}
+   + a_{13}^{(h)}\,\omega_{34}
+   + a_{14}^{(h)}\,\omega_{44}
+   + a_{15}^{(h)}\,\omega_{54} \label{eq:irf_ip_oil}\\[4pt]
+  \mathrm{IRF}_{u,\,\mathrm{Oil}}(h)
+  &= a_{21}^{(h)}\,\omega_{14}
+   + a_{22}^{(h)}\,\omega_{24}
+   + a_{23}^{(h)}\,\omega_{34}
+   + a_{24}^{(h)}\,\omega_{44}
+   + a_{25}^{(h)}\,\omega_{54} \label{eq:irf_u_oil}
+\end{align}
+
+\bigskip
+\noindent\textbf{Shock 5 --- Financial Crisis ($k=5$, column of $\bm{\varepsilon}_t^{\mathrm{Crisis}}$):}
+\begin{align}
+  \mathrm{IRF}_{\log\mathrm{IP},\,\mathrm{Crisis}}(h)
+  &= a_{11}^{(h)}\,\omega_{15}
+   + a_{12}^{(h)}\,\omega_{25}
+   + a_{13}^{(h)}\,\omega_{35}
+   + a_{14}^{(h)}\,\omega_{45}
+   + a_{15}^{(h)}\,\omega_{55} \label{eq:irf_ip_crisis}\\[4pt]
+  \mathrm{IRF}_{u,\,\mathrm{Crisis}}(h)
+  &= a_{21}^{(h)}\,\omega_{15}
+   + a_{22}^{(h)}\,\omega_{25}
+   + a_{23}^{(h)}\,\omega_{35}
+   + a_{24}^{(h)}\,\omega_{45}
+   + a_{25}^{(h)}\,\omega_{55} \label{eq:irf_u_crisis}
+\end{align}
+
+\subsection{Reading the IRF: What Each Term Captures}
+
+Each term $a_{ij}^{(h)}\,\omega_{jk}$ in the IRF decomposition has a precise
+two-layer economic interpretation:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{cp{5.5cm}p{5.5cm}}
+\toprule
+\textbf{Factor} & \textbf{Economic meaning} & \textbf{Role in IRF} \\
+\midrule
+$\omega_{jk}$ &
+  How much aggregate channel $j$ is activated by structural shock $k$ &
+  First layer: shock $\to$ aggregate component \\
+$a_{ij}^{(h)}$ &
+  How much outcome $y_i$ responds to aggregate component $j$ at horizon $h$ &
+  Second layer: aggregate component $\to$ outcome, with dynamics \\
+$a_{ij}^{(h)}\omega_{jk}$ &
+  Contribution of channel $j$ to the total response of $y_i$ to shock $k$ at $h$ &
+  One pathway in the transmission mechanism \\
+$\sum_{j=1}^{5}a_{ij}^{(h)}\omega_{jk}$ &
+  Total response of $y_i$ to shock $k$ at horizon $h$, summing all five channels &
+  The IRF: $\mathrm{IRF}_{i,k}(h)$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Cumulative IRF}
+
+The \textbf{cumulative IRF} up to horizon $H$ sums responses across all horizons:
+
+\begin{equation}\label{eq:CIRF}
+  \mathrm{CIRF}_{i,k}(H)
+  = \sum_{h=0}^{H} \mathrm{IRF}_{i,k}(h)
+  = \sum_{h=0}^{H} \sum_{j=1}^{5} a_{ij}^{(h)}\,\omega_{jk}
+  = \sum_{j=1}^{5} \omega_{jk} \left(\sum_{h=0}^{H} a_{ij}^{(h)}\right).
+\end{equation}
+
+\noindent The factorization on the right separates the weight matrix $\Omega$
+(estimated once) from the horizon-by-horizon dynamic response $\sum_h a_{ij}^{(h)}$
+(estimated by LP), providing a clean decomposition of the long-run effect.
+
+% =============================================================================
+\section{Comparison: Direct LP vs.\ Aggregate-Shock LP}
+% =============================================================================
+
+\subsection{The Direct LP Model}
+
+The standard approach in the empirical literature enters each structural
+shock \emph{directly} as a separate regressor, without any aggregation step:
+
+\begin{keybox}[Direct LP at Horizon $h$]
+\begin{equation}\label{eq:direct_LP}
+  \underbrace{\mathbf{Y}_{t+h}-\mathbf{Y}_{t-1}}_{2\times1}
+  =
+  \bm{\mu}_h
+  +
+  \underbrace{\Gamma_h}_{2\times5}
+  \underbrace{\bm{\varepsilon}_t}_{5\times1}
+  +
+  \underbrace{\mathbf{v}_{t+h}}_{2\times1},
+  \qquad h=0,1,\ldots,H
+\end{equation}
+\end{keybox}
+
+\noindent where $\Gamma_h \in \R^{2\times5}$ is the \textbf{direct response matrix}
+estimated separately at each horizon $h$.  The $(i,k)$ entry $\gamma_{ik}^{(h)}$
+is estimated as a single OLS coefficient with no further structure imposed.
+
+\subsection{Direct LP IRF: Full Expansion}
+
+The IRF under direct LP is simply the entry of $\Gamma_h$:
+
+\begin{equation}\label{eq:direct_IRF_def}
+  \mathrm{IRF}_{i,k}^{\mathrm{Direct}}(h)
+  = \frac{\partial y_{i,t+h}}{\partial \varepsilon_t^k}
+  = \gamma_{ik}^{(h)}.
+\end{equation}
+
+The full $2\times5$ direct IRF matrix at horizon $h$ is:
+
+\begin{equation}\label{eq:direct_IRF_mat}
+\mathbf{IRF}^{\mathrm{Direct}}(h)
+= \Gamma_h
+=
+\begin{pmatrix}
+  \gamma_{11}^{(h)} & \gamma_{12}^{(h)} & \gamma_{13}^{(h)} & \gamma_{14}^{(h)} & \gamma_{15}^{(h)}\\[6pt]
+  \gamma_{21}^{(h)} & \gamma_{22}^{(h)} & \gamma_{23}^{(h)} & \gamma_{24}^{(h)} & \gamma_{25}^{(h)}
+\end{pmatrix}
+\end{equation}
+
+Written as ten scalar equations (one per outcome-shock pair), the direct LP delivers:
+
+\begin{align}
+  \mathrm{IRF}_{\log\mathrm{IP},\,\mathrm{FP}}^{\mathrm{Direct}}(h)   &= \gamma_{11}^{(h)}, &
+  \mathrm{IRF}_{u,\,\mathrm{FP}}^{\mathrm{Direct}}(h)   &= \gamma_{21}^{(h)}, \nonumber\\
+  \mathrm{IRF}_{\log\mathrm{IP},\,\mathrm{MP}}^{\mathrm{Direct}}(h)   &= \gamma_{12}^{(h)}, &
+  \mathrm{IRF}_{u,\,\mathrm{MP}}^{\mathrm{Direct}}(h)   &= \gamma_{22}^{(h)}, \nonumber\\
+  \mathrm{IRF}_{\log\mathrm{IP},\,\mathrm{TFP}}^{\mathrm{Direct}}(h)  &= \gamma_{13}^{(h)}, &
+  \mathrm{IRF}_{u,\,\mathrm{TFP}}^{\mathrm{Direct}}(h)  &= \gamma_{23}^{(h)}, \label{eq:direct_10}\\
+  \mathrm{IRF}_{\log\mathrm{IP},\,\mathrm{Oil}}^{\mathrm{Direct}}(h)  &= \gamma_{14}^{(h)}, &
+  \mathrm{IRF}_{u,\,\mathrm{Oil}}^{\mathrm{Direct}}(h)  &= \gamma_{24}^{(h)}, \nonumber\\
+  \mathrm{IRF}_{\log\mathrm{IP},\,\mathrm{Crisis}}^{\mathrm{Direct}}(h) &= \gamma_{15}^{(h)}, &
+  \mathrm{IRF}_{u,\,\mathrm{Crisis}}^{\mathrm{Direct}}(h) &= \gamma_{25}^{(h)}. \nonumber
+\end{align}
+
+\noindent Each of these ten numbers is an \emph{atomic} OLS estimate; none
+of them is decomposed further.
+
+% ─────────────────────────────────────────────
+\subsection{Side-by-Side Comparison of the Two IRFs}
+% ─────────────────────────────────────────────
+
+\begin{center}
+\renewcommand{\arraystretch}{2.0}
+\begin{tabular}{p{3cm} p{5.3cm} p{5.3cm}}
+\toprule
+ & \textbf{Direct LP} & \textbf{Aggregate-Shock LP} \\
+\midrule
+\textbf{LP equation}
+  & $\mathbf{Y}_{t+h} = \bm{\mu}_h + \Gamma_h\bm{\varepsilon}_t + \mathbf{v}_{t+h}$
+  & $\mathbf{Y}_{t+h} = \bm{\alpha}_h + A_h\Omega\bm{\varepsilon}_t + \mathbf{u}_{t+h}$ \\
+\textbf{IRF matrix}
+  & $\mathbf{IRF}(h) = \Gamma_h$
+  & $\mathbf{IRF}(h) = A_h\Omega$ \\
+\textbf{Single entry}
+  & $\mathrm{IRF}_{i,k}(h) = \gamma_{ik}^{(h)}$
+  & $\mathrm{IRF}_{i,k}(h) = \displaystyle\sum_{j=1}^{5}a_{ij}^{(h)}\omega_{jk}$ \\
+\textbf{Structure}
+  & One free parameter per cell
+  & Product of two matrices; $\Omega$ fixed across $h$ \\
+\textbf{Parameters at each $h$}
+  & $2\times5 = 10$ per horizon
+  & $2\times5 = 10$ in $A_h$; $+\,5\times5=25$ in $\Omega$ (shared) \\
+\textbf{Transmission channels}
+  & Black box: no decomposition
+  & Each IRF split into 5 channel contributions $a_{ij}^{(h)}\omega_{jk}$ \\
+\textbf{Cross-shock mixing}
+  & None; each $\gamma_{ik}^{(h)}$ isolated
+  & Built in: $\omega_{jk}$ allows shock $k$ to enter all channels \\
+\textbf{Estimation}
+  & OLS equation-by-equation
+  & PCA/ML for $\Omega$; OLS for $A_h$ given $\Omega$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ─────────────────────────────────────────────
+\subsection{Equivalence and the Key Restriction}
+% ─────────────────────────────────────────────
+
+\begin{proposition}[Observational Equivalence and the Rank Restriction]
+\label{prop:equiv}
+The two models produce the same fitted values if and only if
+\begin{equation}\label{eq:equiv}
+  \Gamma_h = A_h\,\Omega \qquad \forall\, h.
+\end{equation}
+This factorisation imposes a \textbf{rank restriction}: the IRF matrix $\Gamma_h$
+must lie in the column space of $\Omega^{\top}$ for every horizon $h$.
+If $\Omega$ is unrestricted (full rank), eq.~\eqref{eq:equiv} holds
+trivially (set $A_h=\Gamma_h\Omega^{-1}$) and the models are
+observationally equivalent.  The restriction becomes binding only when
+$\Omega$ is estimated with cross-horizon constraints (e.g., $\Omega$ is
+the same PCA loading matrix for all $h$).
+\end{proposition}
+
+\begin{remark}
+The practical implication is important:
+\begin{itemize}
+  \item \textbf{Direct LP}: estimates $10\times H$ free parameters
+        ($\Gamma_h$ at each of $H$ horizons) --- one regression per cell.
+  \item \textbf{Aggregate LP}: estimates $10\times H$ parameters in $A_h$
+        \emph{plus} $25$ parameters in $\Omega$, but $\Omega$ is
+        \textbf{shared across all horizons}.  For large $H$, this cross-horizon
+        pooling is a powerful regularisation that reduces variance at the cost
+        of imposing structural factorisation.
+\end{itemize}
+\end{remark}
+
+% ─────────────────────────────────────────────
+\subsection{Visual Decomposition of One IRF Entry}
+% ─────────────────────────────────────────────
+
+For the response of $\log\mathrm{IP}$ to the \textbf{Oil shock} at horizon $h$,
+the contrast is sharpest:
+
+\bigskip
+\noindent\textbf{Direct LP} --- single number, no structure:
+\begin{equation}\label{eq:direct_oil}
+  \mathrm{IRF}_{\log\mathrm{IP},\,\mathrm{Oil}}^{\mathrm{Direct}}(h)
+  \;=\;
+  \gamma_{14}^{(h)}
+\end{equation}
+
+\noindent\textbf{Aggregate LP} --- decomposed into five transmission pathways:
+\begin{equation}\label{eq:aggr_oil}
+  \mathrm{IRF}_{\log\mathrm{IP},\,\mathrm{Oil}}^{\mathrm{Aggr}}(h)
+  \;=\;
+  \underbrace{a_{11}^{(h)}\omega_{14}}_{\text{FP channel}}
+  +\underbrace{a_{12}^{(h)}\omega_{24}}_{\text{MP channel}}
+  +\underbrace{a_{13}^{(h)}\omega_{34}}_{\text{TFP channel}}
+  +\underbrace{a_{14}^{(h)}\omega_{44}}_{\text{Oil channel}}
+  +\underbrace{a_{15}^{(h)}\omega_{54}}_{\text{Crisis channel}}
+\end{equation}
+
+\noindent The aggregate LP tells \emph{how much} of the oil shock's impact on
+output passes through the monetary policy channel ($a_{12}^{(h)}\omega_{24}$),
+the TFP channel ($a_{13}^{(h)}\omega_{34}$), and so on.  The direct LP collapses
+all of this into one opaque number $\gamma_{14}^{(h)}$.
+
+% ─────────────────────────────────────────────
+\subsection{Summary: Why Aggregate LP Dominates Direct LP}
+% ─────────────────────────────────────────────
+
+\begin{keybox}[Three Advantages of Aggregate-Shock LP over Direct LP]
+\begin{enumerate}
+  \item \textbf{Structural transparency}: The IRF $= A_h\Omega$ separates
+        \emph{how shocks mix into channels} ($\Omega$, fixed) from
+        \emph{how channels propagate to outcomes over time} ($A_h$, horizon-varying).
+        Direct LP cannot make this distinction.
+
+  \item \textbf{Cross-horizon efficiency}: $\Omega$ is estimated once from
+        the full sample and pooled across all $H$ horizons, reducing
+        estimation uncertainty at long horizons where LP is known to be
+        imprecise.
+
+  \item \textbf{Economic interpretability}: Every IRF entry decomposes into
+        five labelled transmission channels.  Policy analysis can target
+        specific channels (e.g., ``how much of the crisis effect on unemployment
+        runs through the fiscal policy channel?'') instead of reading a single
+        black-box coefficient.
+\end{enumerate}
+\end{keybox}
+
+% =============================================================================
+\section{Simulation Study I: Scalar Aggregate LP vs.\ Direct LP}
+% =============================================================================
+
+\subsection{The Root Cause of Difference}
+
+The Direct LP and the Scalar Aggregate LP estimate fundamentally different
+objects.  The distinction is not a rotation---it is a \textbf{model
+restriction}.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{p{3.5cm} p{5cm} p{5cm}}
+\toprule
+& \textbf{Direct LP} & \textbf{Scalar Aggregate LP} \\
+\midrule
+\textbf{Regressors} & $\bm{\varepsilon}_t \in\R^K$ (5 regressors) & $s_t = \hat{\omega}^{\top}\bm{\varepsilon}_t \in \R$ (1 regressor) \\
+\textbf{Free parameters per horizon} & $N\times K = 10$ & $N\times 1 = 2$ \\
+\textbf{IRF for shock $k$ at $h$} & $\hat{\gamma}_{ik}^{(h)}$ — free coefficient & $\hat{\beta}_i^{(h)}\cdot\hat{\omega}_k$ — product \\
+\textbf{Shape of IRF across $h$} & \textbf{Different} per shock (unrestricted) & \textbf{Same shape} for all shocks (scaled) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The scalar aggregate LP imposes the hard restriction:
+\begin{equation}\label{eq:prop_constraint}
+  \frac{\mathrm{IRF}_{i,k}(h)}{\mathrm{IRF}_{i,k'}(h)}
+  = \frac{\hat{\omega}_k}{\hat{\omega}_{k'}}
+  \quad = \text{constant for all } h.
+\end{equation}
+All shocks are forced to have the \emph{same time profile}, differing only in
+scale.  The Direct LP imposes no such constraint; each shock can decay at its
+own rate.
+
+\subsection{Data-Generating Process}
+
+We simulate $T=600$ observations where each shock drives its own
+AR($\rho_k$) factor process:
+\[
+  Z_{k,t} = \rho_k Z_{k,t-1} + \varepsilon_{k,t},
+  \qquad
+  \mathbf{Y}_t = \sum_{k=1}^{5} Z_{k,t}\,\alpha_k + \bm{\omega}_t.
+\]
+The \textbf{key design}: shocks have deliberately different persistence:
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Shock} & \textbf{Persistence $\rho_k$} & \textbf{Impact on log IP ($\alpha_k$)} \\
+\midrule
+FP     & $0.90$ (very persistent) & $+0.50$ \\
+MP     & $0.45$ (fast decay)      & $-0.35$ \\
+TFP    & $0.75$ (medium)          & $+0.40$ \\
+Oil    & $0.55$ (moderately fast) & $-0.25$ \\
+Crisis & $0.20$ (one-period spike)& $-0.70$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The true IRF of $\log\mathrm{IP}$ to shock $k$ is:
+$\mathrm{IRF}_{k}(h) = \alpha_k\,\rho_k^h$, which has a \textbf{different
+time shape} for every shock.  This is exactly what the scalar aggregate LP
+cannot capture.
+
+\subsection{Estimation}
+
+\textbf{Direct LP} regresses $\Delta_h\mathbf{Y}_{t+h}$ on all five shocks
+$\bm{\varepsilon}_t$ separately (10 coefficients per horizon).
+
+\textbf{Scalar Aggregate LP} (two steps):
+\begin{enumerate}
+  \item Extract the first principal component $\hat{\omega}\in\R^{5}$ from $\bm{\varepsilon}_t$.
+  \item Compute $s_t = \hat{\omega}^{\top}\bm{\varepsilon}_t\in\R$ (scalar).
+  \item Run LP of $\Delta_h\mathbf{Y}_{t+h}$ on $s_t$ alone (2 coefficients per horizon).
+  \item $\mathrm{IRF}_{i,k}(h) = \hat{\beta}_i^{(h)}\cdot\hat{\omega}_k$.
+\end{enumerate}
+
+\subsection{Results: Genuine Differences in IRF Estimates}
+
+Table~\ref{tab:irf_both} reports the $\log\mathrm{IP}$ IRF at key horizons
+for each shock.
+
+\begin{table}[htbp]
+  \centering
+  \caption{IRF of $\log\mathrm{IP}$: True vs.\ Direct LP vs.\ Scalar Aggregate LP.
+           Differences are large because scalar LP forces all shocks to
+           share one time profile.}
+  \label{tab:irf_both}
+  \begin{tabular}{lrrrrrrrrr}
+    \toprule
+    & \multicolumn{3}{c}{\textbf{True IRF}}
+    & \multicolumn{3}{c}{\textbf{Direct LP}}
+    & \multicolumn{3}{c}{\textbf{Scalar Agg LP}} \\
+    \cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+    \textbf{Shock} & $h{=}0$ & $h{=}5$ & $h{=}10$
+                   & $h{=}0$ & $h{=}5$ & $h{=}10$
+                   & $h{=}0$ & $h{=}5$ & $h{=}10$ \\
+    \midrule
+    FP     &$ 0.500$&$ 0.295$&$ 0.174$&$ 0.490$&$ 0.283$&$ 0.124$&$-0.013$&$ 0.001$&$ 0.001$\\
+    MP     &$-0.350$&$-0.007$&$-0.000$&$-0.367$&$-0.024$&$-0.009$&$-0.328$&$ 0.026$&$ 0.018$\\
+    TFP    &$ 0.400$&$ 0.095$&$ 0.023$&$ 0.422$&$ 0.081$&$ 0.011$&$-0.037$&$ 0.003$&$ 0.002$\\
+    Oil    &$-0.250$&$-0.013$&$-0.001$&$-0.252$&$-0.158$&$-0.089$&$ 0.086$&$-0.007$&$-0.005$\\
+    Crisis &$-0.700$&$-0.000$&$ 0.000$&$-0.720$&$-0.040$&$ 0.007$&$-0.066$&$ 0.005$&$ 0.004$\\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\noindent The most striking failure: \textbf{FP shock}.
+The Direct LP correctly recovers the large persistent response
+($-0.490$ at $h=0$, still $-0.124$ at $h=10$).  The scalar aggregate LP
+gives $-0.013$ at $h=0$---essentially \textbf{zero}---because the first
+PC barely loads on FP ($\hat\omega_{\mathrm{FP}} = -0.036$), having been
+dominated by the MP shock in the SVD.
+
+\subsection{IRF Comparison: Full Grid}
+
+Figure~\ref{fig:irf_compare_scalar} plots all IRFs.  Blue (Direct LP) tracks the
+true IRF closely for all shocks; red (Scalar LP) fails badly for FP, TFP,
+Oil, and Crisis.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{/Users/pankajbansod/lp_caramp_feilich_5shocks.png}
+  \caption{IRF comparison (Scalar Aggregate LP).  \textbf{Black dashed}: true IRF.
+    \textbf{Blue solid + band}: Direct LP (90\% CI).
+    \textbf{Red dash-dot}: Scalar Aggregate LP.
+    For FP, TFP, Oil and Crisis the scalar LP fails to recover the true IRF
+    because the single index cannot simultaneously capture shocks with
+    very different persistence levels.}
+  \label{fig:irf_compare_scalar}
+\end{figure}
+
+\subsection{The Proportionality Test: Smoking Gun}
+
+The imposed constraint of the scalar LP is that
+$\mathrm{IRF}_k(h)/\mathrm{IRF}_{\mathrm{FP}}(h)$ must be constant in $h$
+(equation~\ref{eq:prop_constraint}).  Figure~\ref{fig:channels} plots this
+ratio for each non-FP shock across horizons.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{/Users/pankajbansod/irf_channels_crisis.png}
+  \caption{\textbf{Proportionality test.}
+    Each panel shows $\mathrm{IRF}_k(h)\,/\,\mathrm{IRF}_{\mathrm{FP}}(h)$.
+    \textbf{Direct LP} (blue): ratio \emph{varies strongly} with $h$
+    because MP, TFP, Oil, Crisis all decay faster than FP
+    ($\rho_{\mathrm{MP}}=0.45 \ll \rho_{\mathrm{FP}}=0.90$).
+    \textbf{Scalar Agg LP} (red): ratio is \emph{exactly flat}
+    (fixed at $\hat\omega_k/\hat\omega_{\mathrm{FP}}$), revealing the
+    hard constraint the model imposes.
+    The flat red line against the varying blue line is direct evidence
+    that the scalar aggregate LP misspecifies the IRF dynamics.}
+  \label{fig:channels}
+\end{figure}
+
+\begin{keybox}[Why the Two IRFs Must Differ]
+\begin{enumerate}
+  \item \textbf{Different shock persistence ($\rho_k$ differs)}: The true
+        ratio $\mathrm{IRF}_k(h)/\mathrm{IRF}_{k'}(h)
+        = (\alpha_k/\alpha_{k'})\,(\rho_k/\rho_{k'})^h$ changes
+        exponentially in $h$.  The scalar aggregate LP forces this ratio
+        to be $\hat\omega_k/\hat\omega_{k'}$, a constant---a
+        constraint that is generically false.
+
+  \item \textbf{PCA ignores $Y$}: The first PC $\hat\omega$ is estimated
+        from $\bm\varepsilon_t$ alone, without using $Y_t$.  It maximises
+        variance of the shock series, \emph{not} explanatory power for $Y$.
+        For i.i.d.\ shocks all PCs have equal variance, so the first PC
+        is an \emph{arbitrary} direction in $\R^K$, leading to
+        severely distorted IRFs for shocks that happen to lie off this
+        direction (FP: $\hat\omega_k=-0.036$, nearly orthogonal to $s_t$).
+
+  \item \textbf{Degrees of freedom}: Direct LP has $N\!\times\!K=10$ free
+        IRF parameters per horizon; scalar aggregate LP has only $N=2$.
+        The 8-parameter reduction imposes constraints that are violated
+        in the data.
+\end{enumerate}
+\textbf{Conclusion}: Direct LP and Scalar Aggregate LP produce the same
+IRFs only in the special case where all shocks have identical time profiles
+(same $\rho_k$) \emph{and} the first PC aligns with the true aggregate index.
+In general---and in this simulation---they are substantially different.
+\end{keybox}
+
+% =============================================================================
+\section{The OLS Algebraic Identity Theorem}
+\label{sec:ols_identity}
+% =============================================================================
+
+The comparison in Section~8 between Direct LP and Aggregate-Shock LP
+suggests that the two approaches should produce different IRF estimates
+because of the structural factorisation $\Gamma_h = A_h\Omega$.
+However, we now establish a surprising \emph{negative} result:
+under OLS estimation with a known, full-rank $\Omega$, the two approaches
+are \textbf{algebraically identical} in \emph{every finite sample}.
+
+\subsection{Setup}
+
+Define the two sets of regressors:
+\begin{itemize}
+  \item \textbf{Direct LP}: regress $\mathbf{y}_{t+h}$ on the structural
+        shock vector $\bm{\varepsilon}_t$.  Stacking over $t$, let
+        $E = [\bm{\varepsilon}_1,\ldots,\bm{\varepsilon}_T]' \in\R^{T\times K}$.
+  \item \textbf{Aggregate LP}: regress $\mathbf{y}_{t+h}$ on the aggregate
+        shock vector $\mathbf{s}_t = \Omega\bm{\varepsilon}_t$.  Stacking,
+        $S = E\,\Omega' \in\R^{T\times K}$.
+\end{itemize}
+
+\subsection{Theorem: OLS Algebraic Identity}
+
+\begin{keybox}[Theorem (OLS Identity)]
+\begin{proposition}[OLS Algebraic Identity]\label{prop:ols_identity}
+For any invertible $K\times K$ matrix $\Omega$, the Direct OLS and
+Aggregate OLS estimators produce \textbf{exactly the same} structural
+IRFs in every sample:
+\begin{equation}\label{eq:ols_identity}
+  \boxed{\hat{\Gamma}_h^{\mathrm{OLS}}
+  \;=\;
+  \hat{A}_h^{\mathrm{OLS}}\;\Omega
+  \qquad \text{exactly, in every sample, for all } h.}
+\end{equation}
+\end{proposition}
+\end{keybox}
+
+\begin{proof}
+The OLS estimators are:
+\begin{align}
+  \hat{\Gamma}_h^{\mathrm{OLS}} &= (E'E)^{-1}E'\mathbf{Y}_{+h},
+  \label{eq:gamma_ols}\\[6pt]
+  \hat{A}_h^{\mathrm{OLS}} &= (S'S)^{-1}S'\mathbf{Y}_{+h}.
+  \label{eq:a_ols}
+\end{align}
+Substituting $S = E\Omega'$:
+\begin{align}
+  S'S &= \Omega E'E\Omega', \label{eq:STS}\\
+  S'\mathbf{Y}_{+h} &= \Omega E'\mathbf{Y}_{+h}. \label{eq:STY}
+\end{align}
+Therefore:
+\begin{align}
+  \hat{A}_h^{\mathrm{OLS}}
+  &= (\Omega E'E\Omega')^{-1}\,\Omega\, E'\mathbf{Y}_{+h} \nonumber\\
+  &= (\Omega')^{-1}(E'E)^{-1}\Omega^{-1}\,\Omega\, E'\mathbf{Y}_{+h} \nonumber\\
+  &= (\Omega')^{-1}\underbrace{(E'E)^{-1} E'\mathbf{Y}_{+h}}_{=\;\hat{\Gamma}_h^{\mathrm{OLS}}}.
+  \label{eq:a_cancel}
+\end{align}
+So $\hat{A}_h^{\mathrm{OLS}} = (\Omega')^{-1}\hat{\Gamma}_h^{\mathrm{OLS}}$,
+and multiplying both sides on the left by $\Omega'$:
+\begin{equation}
+  \hat{A}_h^{\mathrm{OLS}}\;\Omega
+  = (\Omega')^{-1}\hat{\Gamma}_h^{\mathrm{OLS}}\;\Omega
+  \;\;\xrightarrow{\text{right-multiply}}\;\;
+  \hat{\Gamma}_h^{\mathrm{OLS}} = \hat{A}_h^{\mathrm{OLS}}\;\Omega.
+  \qedhere
+\end{equation}
+\end{proof}
+
+\begin{remark}[Interpretation]
+This identity is \textbf{not} a finite-sample coincidence---it is an
+algebraic tautology.  It arises because OLS is
+\emph{equivariant to invertible linear transformations} of the
+regressors.  Reparameterising $\bm{\varepsilon}\to\Omega\bm{\varepsilon}$
+merely rotates and scales the coefficient space; OLS undoes this
+transformation automatically.
+\end{remark}
+
+\begin{remark}[Misspecified $\Omega$]
+The identity holds for \emph{any} invertible $\Omega$, even a ``wrong'' one.
+If the researcher uses $\tilde{\Omega}\neq\Omega_{\mathrm{true}}$
+(with $\tilde{\Omega}$ still invertible), defines
+$\tilde{S}=E\tilde{\Omega}'$, and converts back via
+$\hat{A}_h^{\mathrm{OLS}}\tilde{\Omega}$, the result is still
+$\hat{\Gamma}_h^{\mathrm{OLS}}$.  OLS \emph{cannot distinguish} between
+parameterisations.
+\end{remark}
+
+\subsection{Implication: OLS Cannot Distinguish Parameterisations}
+
+The OLS identity has a stark consequence:
+
+\begin{keybox}[Consequence of OLS Identity]
+Under OLS estimation with a known, invertible $\Omega$, the Aggregate-Shock LP
+is \textbf{observationally identical} to the Direct LP.  The structural
+decomposition $\Gamma_h = A_h\Omega$ provides no empirically testable
+content beyond what Direct LP already delivers.  To obtain genuinely
+different estimates, one must either:
+\begin{enumerate}
+  \item Use a penalised/regularised estimator (Ridge, LASSO, Bayesian),
+  \item Reduce the dimension of $\Omega$ ($r < K$), or
+  \item Impose cross-horizon restrictions on $A_h$.
+\end{enumerate}
+\end{keybox}
+
+
+% =============================================================================
+\section{Breaking the Identity: Ridge Regression}
+\label{sec:ridge}
+% =============================================================================
+
+We now show that \textbf{Ridge regression} ($L_2$ penalty) generically
+breaks the OLS identity, producing genuinely different IRF estimates
+from the two parameterisations.
+
+\subsection{Ridge LP Estimators}
+
+Add a penalty $\lambda\|\beta\|_2^2$ to the OLS objective.  The
+estimators become:
+
+\begin{align}
+  \hat{\Gamma}_h^{\mathrm{Ridge}}
+  &= \bigl(E'E + \lambda I_K\bigr)^{-1}E'\mathbf{Y}_{+h},
+  \label{eq:gamma_ridge}\\[6pt]
+  \hat{A}_h^{\mathrm{Ridge}}
+  &= \bigl(S'S + \lambda I_K\bigr)^{-1}S'\mathbf{Y}_{+h}.
+  \label{eq:a_ridge}
+\end{align}
+
+\noindent Define $M \equiv E'E$ (the Gram matrix of structural shocks).
+
+\subsection{Theorem: Ridge Divergence}
+
+\begin{keybox}[Theorem (Ridge Breaks Identity)]
+\begin{proposition}[Ridge Divergence]\label{prop:ridge}
+Under Ridge estimation ($\lambda > 0$), the structural IRFs from the
+two parameterisations satisfy
+\begin{equation}\label{eq:ridge_neq}
+  \hat{A}_h^{\mathrm{Ridge}}\;\Omega
+  \;=\;
+  \hat{\Gamma}_h^{\mathrm{Ridge}}
+  \quad\Longleftrightarrow\quad
+  \Omega\Omega' = I_K
+  \quad\text{($\Omega$ orthogonal)}.
+\end{equation}
+For any non-orthogonal $\Omega$ (i.e., $\Omega\Omega'\neq I$), the two
+IRFs are \textbf{generically different}.
+\end{proposition}
+\end{keybox}
+
+\begin{proof}
+Substituting $S = E\Omega'$ into~\eqref{eq:a_ridge}:
+\begin{align}
+  \hat{A}_h^{\mathrm{Ridge}}
+  &= \bigl(\Omega\,M\,\Omega' + \lambda I\bigr)^{-1}\,\Omega\, E'\mathbf{Y}_{+h}.
+  \label{eq:a_ridge_expand}
+\end{align}
+For the identity $\hat{A}_h^{\mathrm{Ridge}}\Omega = \hat{\Gamma}_h^{\mathrm{Ridge}}$
+to hold, we need:
+\begin{equation}\label{eq:ridge_condition}
+  \Omega'\bigl(\Omega\,M\,\Omega' + \lambda I\bigr)^{-1}\Omega
+  \;=\;
+  (M + \lambda I)^{-1}.
+\end{equation}
+Rearranging via Woodbury-style arguments, this requires:
+\begin{equation}
+  \Omega M\Omega' + \lambda I
+  = \Omega(M + \lambda I)\Omega'
+  \quad\Longleftrightarrow\quad
+  \lambda I = \lambda\,\Omega\Omega'.
+\end{equation}
+This holds if and only if $\Omega\Omega' = I_K$, i.e., $\Omega$ is orthogonal.
+\end{proof}
+
+\subsection{Intuition: Why Ridge Breaks the Identity}
+
+\begin{keybox}[Intuition]
+The Ridge penalty $\lambda\|\beta\|_2^2$ shrinks coefficients toward
+\textbf{zero}.  But ``zero'' in the structural space ($\Gamma_h = 0$) and
+``zero'' in the aggregate space ($A_h = 0$) represent different economic
+hypotheses when $\Omega$ is not orthogonal.
+
+\begin{itemize}
+  \item \textbf{Direct Ridge} shrinks each $\gamma_{ik}^{(h)}$ toward zero,
+        penalising the structural coefficient magnitudes equally.
+  \item \textbf{Aggregate Ridge} shrinks each $a_{ij}^{(h)}$ toward zero,
+        penalising the aggregate coefficient magnitudes equally.  When
+        converted back via $\hat{A}_h\Omega$, the effective penalty on
+        structural coefficients is $\lambda\|\beta\|_{\Omega\Omega'}^2$
+        (a \emph{weighted} norm), not $\lambda\|\beta\|_2^2$.
+\end{itemize}
+
+\noindent The two penalties coincide only when $\Omega\Omega' = I$ (orthogonal),
+making the two norms identical.  For non-orthogonal $\Omega$, they
+impose different shrinkage directions, yielding different estimates.
+\end{keybox}
+
+
+% =============================================================================
+\section{Simulation Study II: Ridge LP Breaks the OLS Identity}
+\label{sec:ridge_sim}
+% =============================================================================
+
+We now demonstrate the OLS identity and Ridge divergence numerically.
+
+\subsection{Data-Generating Process}
+
+We use the same structural DGP as Section~9, with one addition: a
+non-orthogonal mixing matrix $\Omega$.
+
+\begin{align}
+  &\bm{\varepsilon}_t \sim \mathcal{N}(\mathbf{0}, I_5), \quad
+  Z_{k,t} = \rho_k Z_{k,t-1} + \varepsilon_{k,t}, \nonumber\\[4pt]
+  &\mathbf{Y}_t = \alpha\,Z_t + 0.3\,\bm{\eta}_t, \qquad
+  \mathbf{s}_t = \Omega\,\bm{\varepsilon}_t.
+  \label{eq:dgp_ridge}
+\end{align}
+
+\noindent Parameters: $T=500$, $K=5$, $H_{\max}=20$, $N_Y=2$.
+
+\medskip\noindent
+Persistence: $\rho = (0.90,\; 0.45,\; 0.75,\; 0.55,\; 0.20)$.
+
+\medskip\noindent
+Impact matrix $\alpha$ ($2\times5$):
+\[
+\alpha = \begin{pmatrix}
+  +0.50 & -0.35 & +0.40 & -0.25 & -0.70 \\
+  -0.20 & +0.15 & -0.10 & +0.30 & +0.50
+\end{pmatrix}.
+\]
+
+\noindent
+Non-orthogonal mixing matrix $\Omega$ ($5\times5$):
+\[
+\Omega = \begin{pmatrix}
+  0.80 &  0.15 & -0.10 &  0.05 &  0.20 \\
+  0.10 &  0.70 &  0.20 & -0.15 &  0.10 \\
+ -0.05 &  0.10 &  0.85 &  0.10 & -0.05 \\
+  0.15 & -0.20 &  0.05 &  0.75 &  0.15 \\
+  0.10 &  0.05 &  0.15 &  0.10 &  0.60
+\end{pmatrix},
+\quad
+\max|\Omega\Omega' - I| = 0.5950,\;
+\det(\Omega)=0.166.
+\]
+
+\subsection{Estimation}
+
+At each horizon $h=0,1,\ldots,20$, we estimate both models:
+
+\begin{enumerate}
+  \item \textbf{Direct LP}: $\hat{\Gamma}_h = (E'E + \lambda I)^{-1}E'\mathbf{Y}_{+h}$,
+        using $E = [\bm{\varepsilon}_1,\ldots,\bm{\varepsilon}_T]'$.
+  \item \textbf{Aggregate LP}: $\hat{A}_h = (S'S + \lambda I)^{-1}S'\mathbf{Y}_{+h}$,
+        using $S = E\Omega'$.  Convert to structural:
+        $\hat{\Gamma}_h^{\mathrm{Agg}} = \hat{A}_h\,\Omega$.
+\end{enumerate}
+
+\noindent We run both with $\lambda=0$ (OLS) and $\lambda=500$ (Ridge).
+The Ridge penalty $\lambda=500$ produces approximately 50\% shrinkage since
+$E'E \approx TI_K = 500I_5$.
+
+\subsection{Results}
+
+\begin{keybox}[Key Numerical Results]
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Method} & $\max|\hat{\Gamma}^{\mathrm{Direct}} - \hat{\Gamma}^{\mathrm{Agg}}|$
+                & \textbf{Verdict} \\
+\midrule
+OLS ($\lambda=0$)        & $1.22\times10^{-15}$ & \textbf{IDENTICAL} (machine zero) \\
+Ridge ($\lambda=500$)    & $0.1851$             & \textbf{DIFFERENT} \\
+Misspecified $\tilde\Omega$ (OLS) & $1.0\times10^{-15}$ & \textbf{IDENTICAL} (identity holds!) \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{keybox}
+
+\noindent The OLS identity is confirmed at machine precision.  Even with
+a \emph{wrong} $\Omega$, OLS recovers the same $\hat\Gamma_h$---confirming
+that OLS is completely agnostic to the parameterisation.
+
+\medskip
+\noindent The Ridge estimator breaks the identity: the maximum pointwise
+difference $0.1851$ is economically substantial (about 26\% of the largest
+true IRF entry).
+
+\subsection{RMSE Comparison}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lc}
+\toprule
+\textbf{Estimator} & \textbf{RMSE vs.\ True IRF} \\
+\midrule
+Direct OLS         & $0.0735$ \\
+Aggregate OLS      & $0.0735$ (identical by theorem) \\
+Direct Ridge       & $0.0776$ \\
+Aggregate Ridge    & $0.1011$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Direct Ridge has \emph{lower} RMSE than Aggregate Ridge ($0.0776$
+vs.\ $0.1011$), showing that the Ridge penalty in the structural
+parameterisation is better aligned with the true data-generating process.
+The Aggregate Ridge pays a bias cost from shrinking in a misaligned
+coordinate system.
+
+\subsection{IRF at Selected Horizons}
+
+Table~\ref{tab:irf_ridge} reports IRFs for $\log\mathrm{IP}$ at key horizons.
+
+\begin{table}[htbp]
+  \centering
+  \caption{IRF of $\log\mathrm{IP}$: True, Direct OLS, Aggregate OLS,
+           Direct Ridge ($\lambda=500$), Aggregate Ridge ($\lambda=500$),
+           and the Ridge divergence $\Delta_{\mathrm{Ridge}}$.
+           OLS columns are identical (to machine precision).
+           Ridge columns differ substantially.}
+  \label{tab:irf_ridge}
+  \footnotesize
+  \begin{tabular}{lrrrrrrrr}
+    \toprule
+    & & & & \multicolumn{2}{c}{\textbf{Ridge}} \\
+    \cmidrule(lr){5-6}
+    \textbf{Shock} & $h$ & \textbf{True} & \textbf{OLS}
+                   & \textbf{Direct} & \textbf{Aggregate} & $\Delta$ \\
+    \midrule
+    FP & 0  & $0.500$ & $0.490$ & $0.223$ & $0.038$ & $0.184$  \\
+    FP & 5  & $0.295$ & $0.283$ & $0.143$ & $0.044$ & $0.099$  \\
+    FP & 10 & $0.174$ & $0.124$ & $0.079$ & $0.016$ & $0.063$  \\
+    FP & 20 & $0.061$ & $0.027$ & $0.020$ & $-0.011$ & $0.031$  \\
+    \addlinespace
+    MP & 0  & $-0.350$ & $-0.367$ & $-0.163$ & $-0.083$ & $-0.079$  \\
+    MP & 5  & $-0.007$ & $-0.024$ & $-0.015$ & $-0.003$ & $-0.012$  \\
+    \addlinespace
+    TFP & 0  & $0.400$ & $0.422$ & $0.182$ & $0.105$ & $0.077$  \\
+    TFP & 5  & $0.095$ & $0.081$ & $0.041$ & $0.022$ & $0.019$  \\
+    \addlinespace
+    Oil & 0  & $-0.250$ & $-0.252$ & $-0.108$ & $-0.080$ & $-0.028$  \\
+    Oil & 5  & $-0.013$ & $-0.158$ & $-0.058$ & $-0.048$ & $-0.010$  \\
+    \addlinespace
+    Crisis & 0  & $-0.700$ & $-0.720$ & $-0.312$ & $-0.234$ & $-0.078$  \\
+    Crisis & 5  & $-0.000$ & $-0.040$ & $-0.024$ & $-0.014$ & $-0.010$  \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\noindent The FP shock shows the largest divergence at $h=0$:
+Direct Ridge $= 0.223$ vs.\ Aggregate Ridge $= 0.038$, a difference
+of $0.184$---while OLS gives $0.490$ for both.
+
+\subsection{IRF Comparison Plots}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{/Users/pankajbansod/irf_comparison.png}
+  \caption{IRF comparison across all methods.
+    \textbf{Black}: true IRF ($\alpha_k\rho_k^h$).
+    \textbf{Blue dashed}: Direct OLS.
+    \textbf{Pink dash-dot}: Aggregate OLS ($\equiv$ Direct OLS, exact overlap).
+    \textbf{Green solid}: Direct Ridge.
+    \textbf{Orange dash-dot}: Aggregate Ridge ($\neq$ Direct Ridge).
+    The OLS lines overlap perfectly (algebraic identity);
+    the Ridge lines diverge visibly, confirming Proposition~\ref{prop:ridge}.}
+  \label{fig:irf_ridge}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{/Users/pankajbansod/irf_ridge_divergence.png}
+  \caption{Ridge IRF divergence: $\hat{\Gamma}_h^{\mathrm{Direct\,Ridge}}
+    - \hat{A}_h^{\mathrm{Ridge}}\Omega$ at each horizon, for all 5 shocks
+    $\times$ 2 outcomes.  These are \emph{not} zero---confirming that
+    Ridge estimation breaks the OLS algebraic identity.
+    Divergence is largest at $h=0$ (impact) and decays with horizon.}
+  \label{fig:ridge_divergence}
+\end{figure}
+
+\subsection{Sensitivity to $\lambda$}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{/Users/pankajbansod/irf_lambda_sensitivity.png}
+  \caption{Sensitivity to Ridge penalty $\lambda$.
+    \textbf{Panel (a)}: Maximum divergence between Direct Ridge and
+    Aggregate Ridge IRFs grows with $\lambda$, confirming the
+    theoretical prediction (at $\lambda=0$ the OLS identity holds;
+    divergence increases with regularisation strength).
+    \textbf{Panel (b)}: RMSE vs.\ true IRFs.  Direct Ridge (green)
+    maintains lower RMSE than Aggregate Ridge (orange) across all $\lambda$,
+    showing that the structural-space penalty is better aligned with the DGP.}
+  \label{fig:lambda}
+\end{figure}
+
+\subsection{Other Approaches That Break the Identity}
+
+Beyond Ridge regression, several other methods produce genuinely different
+estimates from the two parameterisations:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{p{4cm}p{8.5cm}}
+\toprule
+\textbf{Method} & \textbf{Why it breaks the identity} \\
+\midrule
+LASSO ($L_1$ penalty) & Sparsity-inducing; not equivariant to rotations \\
+Bayesian LP with priors & Prior $p(\beta)$ is not transformation-invariant \\
+Estimated $\hat\Omega$ (two-step) & Generated regressor uncertainty; different for each parameterisation \\
+Factor LP ($r < K$) & Dimension reduction loses information; column spaces differ \\
+Misspecified model (wrong $\Omega$) & Wrong transformation + OLS still gives Direct OLS (identity holds!), but wrong conversion formula \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+
+% =============================================================================
+\section*{Summary}
+% =============================================================================
+
+The mathematical framework developed in this document:
+
+\bigskip
+\begin{center}
+\renewcommand{\arraystretch}{1.8}
+\begin{tabular}{cl}
+\toprule
+\textbf{Step} & \textbf{Equation} \\
+\midrule
+Shocks     & $\bm{\varepsilon}_{t}\in\R^{5\times1}$: FP, MP, TFP, Oil, Crisis \\
+Aggregate  & $\aggr_{t} = \Omega\,\bm{\varepsilon}_{t}$,
+             \quad $\Omega\in\R^{5\times5}$ (non-orthogonal) \\
+Output     & $\mathbf{Y}_{t} = A_t\,\aggr_{t} + \bm{\omega}_{t}$,
+             \quad $A_t\in\R^{2\times5}$,\ $\mathbf{Y}_t\in\R^{2\times1}$ \\
+Reduced    & $\mathbf{Y}_{t} = B_t\,\bm{\varepsilon}_{t} + \bm{\omega}_{t}$,
+             \quad $B_t = A_t\Omega\in\R^{2\times5}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\bigskip\noindent
+\textbf{Key results:}
+\begin{enumerate}
+  \item \textbf{Scalar Aggregate LP} ($r=1$): forces proportional IRFs
+        across shocks (constant ratio $\omega_k/\omega_{k'}$), leading to
+        severely biased estimates when shocks have different persistence
+        (Section~9).
+
+  \item \textbf{OLS Algebraic Identity} (Proposition~\ref{prop:ols_identity}):
+        for any invertible $\Omega$, Direct OLS $\equiv$ Aggregate OLS in
+        \emph{every} sample---even with a misspecified $\Omega$ (Section~10).
+
+  \item \textbf{Ridge Divergence} (Proposition~\ref{prop:ridge}):
+        Ridge ($\lambda > 0$) breaks the identity whenever $\Omega\Omega'
+        \neq I$.  Direct Ridge has lower RMSE than Aggregate Ridge,
+        confirming that the structural parameterisation aligns better with
+        the DGP (Section~11--12).
+\end{enumerate}
+
+\bigskip\noindent
+\textit{Next step:} Bayesian LP with informative priors as an alternative
+to Ridge; estimation of $\Omega$ from data (PCA, ML); and extension to
+empirical data with government debt interaction $Z_{t-1}$.
+
+\end{document}
