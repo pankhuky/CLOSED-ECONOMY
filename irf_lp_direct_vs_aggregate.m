@@ -50,16 +50,20 @@ aggr = eps * Omega_true';                      % T×(K+1)  aggregate shocks
 
 rng(42);   % reset seed so outcomes are reproducible
 
-unemp  = zeros(T,1);   inf_rate = zeros(T,1);
-unemp(1)    = 6;        % starting unemployment rate (%)
-inf_rate(1) = 2;        % starting inflation rate (%)
+%  Y_t = rho*Y_{t-1} + (A0_true * aggr_t) + noise
+%  This DGP is consistent with true_irf(h) = rho^h * A0_true * Omega_true
+unemp     = zeros(T,1);
+infl_rate = zeros(T,1);
+unemp(1)     = 6;   % starting unemployment rate (%)
+infl_rate(1) = 2;   % starting inflation rate (%)
 
 for t = 2:T
-    unemp(t)    = 0.5 + 0.9*unemp(t-1)    + 0.5*randn();
-    inf_rate(t) = 0.5 + 0.8*inf_rate(t-1) + 0.4*randn();
+    shock_effect = A0_true * aggr(t,:)';          % 2×1 contemporaneous impact
+    unemp(t)     = 0.5 + rho*unemp(t-1)     + shock_effect(1) + 0.5*randn();
+    infl_rate(t) = 0.5 + rho*infl_rate(t-1) + shock_effect(2) + 0.4*randn();
 end
 
-Y = [unemp, inf_rate];  % T×N
+Y = [unemp, infl_rate];  % T×N
 
 %% ── Diagonal (direct) mixing matrix ─────────────────────────────────
 %  Omega_direct: same diagonal as Omega_true, off-diagonal set to zero.
@@ -69,9 +73,8 @@ Omega_direct = diag(diag(Omega_true));  % 5×5 diagonal matrix
 
 %% ── OLS helper ───────────────────────────────────────────────────────
 %  Returns OLS coefficients b and heteroskedasticity-robust (HC0) SEs.
-ols = @(X,y) deal( ...
-    (X'*X)\(X'*y), ...
-    sqrt(diag( ((X'*X)\(X'*(diag((y - X*((X'*X)\(X'*y))).^2)*X)))/(X'*X) )) );
+%  Defined as a local function at the bottom of this script.
+%  (See ols_hc0 at end of file.)
 
 %% ── (1) Direct LP ────────────────────────────────────────────────────
 %  Regressor: s_direct_t = Omega_direct * eps_t
@@ -103,7 +106,7 @@ for h = 0:H
     X = [ones(Teff,1), X_sh, X_ctrl];  % Teff × (1+(K+1)+N*p)
 
     for n = 1:N
-        [b, se]              = ols(X, dep(:,n));
+        [b, se]              = ols_hc0(X, dep(:,n));
         IRF_dir(n,:,h+1)    = b(2 : K+2)';
         IRF_dir_se(n,:,h+1) = se(2 : K+2)';
     end
@@ -142,7 +145,7 @@ for h = 0:H
     A_h    = zeros(N, K+1);
     A_h_se = zeros(N, K+1);
     for n = 1:N
-        [b, se]     = ols(X, dep(:,n));
+        [b, se]     = ols_hc0(X, dep(:,n));
         A_h(n,:)    = b(2 : K+2)';
         A_h_se(n,:) = se(2 : K+2)';
     end
@@ -206,3 +209,14 @@ sgtitle('IRFs via Local Projections: Direct Shock vs Aggregate Shock', ...
 
 saveas(fig, 'irf_direct_vs_aggregate.png');
 fprintf('IRF plot saved to irf_direct_vs_aggregate.png\n');
+
+%% ── Local function ───────────────────────────────────────────────────
+function [b, se] = ols_hc0(X, y)
+%OLS_HC0  OLS with heteroskedasticity-robust (HC0) standard errors.
+%   [b, se] = OLS_HC0(X, y) returns the OLS coefficient vector b and a
+%   vector of HC0 standard errors se.
+    b     = (X'*X) \ (X'*y);
+    e     = y - X*b;
+    XtXi  = inv(X'*X);
+    se    = sqrt(diag( XtXi * (X' * diag(e.^2) * X) * XtXi ));
+end
